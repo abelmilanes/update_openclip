@@ -8,7 +8,7 @@ Suports Image sequences or movie files.
 ## Requirments
 Python 3.xx
 
-Install PyYAML
+PyYAML
 
 ```bash
 pip install PyYAML

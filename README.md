@@ -2,11 +2,15 @@
 
 Python utility to append new versions to Autodesk  OpenClip files
 
-Suports image sequences and movie files.
-
 More information about Autodesk Openclip:
 
 [Open Clip Reference](https://help.autodesk.com/view/FLAME/2025/ENU/?guid=Flame_API_Open_Clip_Reference_html)
+
+## Features
+- Standalone multi-platform
+- Suports image sequences and movie files.
+- YAML based presets for file location and versions entries
+
 
 ## Requirments
 Python 3.xx

@@ -23,11 +23,11 @@ pip install PyYAML
 
 ## Usage
 
-```bash
+```
 python update_openclip.py -f <openclip file> -i <versioned clip>
 ```
 
-```bash 
+```
   -f FILE,              --file FILE  Openclip file
   
   -i INPUT,             --input INPUT

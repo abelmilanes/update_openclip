@@ -17,7 +17,7 @@ pip install PyYAML
 ## Usage
 
 ```bash
- ./update_openclip.py -f <openclip file> -i <image sequence>
+python update_openclip.py -f <openclip file> -i <image sequence>
 ```
 
 ...

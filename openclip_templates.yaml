@@ -1,0 +1,61 @@
+# Openclip Feed Templates
+default:
+  tag: feed
+  attributes:
+    vuid: v00 # Modify
+    uid: render_name # Modify
+  children:
+    - tag: startTimecode
+      attributes:
+        type: time
+      children:
+        - tag: rate
+          text: "25" # Modify
+        - tag: nbTicks
+          text: "100" # Modify
+        - tag: dropMode
+          text: NDF # Hardcode
+
+    - tag: spans
+      children:
+        - tag: span
+          children:
+            - tag: path
+              text: image_sequence # Modify
+              attributes:
+                encoding: pattern
+
+# Version templates
+nuke_version:
+  tag: version
+  attributes:
+    uid: v00 # Modify
+  children:
+    - tag: name
+      text: v00 # Modify
+    - tag: creationDate
+      text: yyyy/mm/dd hh:mm:ss # Modify
+    - tag: userData
+      attributes:
+        type: dict
+      children:
+        - tag: appName
+          text: Nuke # Hardcode
+          attributes:
+            type: binary
+        - tag: appVersion
+          text: 13.0v2 # Hardcoded
+          attributes:
+            type: string
+        - tag: batchSetup
+          text: /path/to/nuke/script.nk # Hardcoded | we can try updating this from the EXR metadata
+          attributes:
+            type: ascii
+        - tag: module
+          text: Nuke Script # Hardcoded
+          attributes:
+            type: string
+        - tag: versionNumber
+          text: "0" # Modify
+          attributes:
+            type: uint64

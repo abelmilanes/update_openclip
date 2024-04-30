@@ -1,6 +1,6 @@
 # update_openclip
 
-Python utility to append new version to Autodesk  OpenClip files
+Python utility to append new versions to Autodesk  OpenClip files
 
 Suports image sequences and movie files.
 

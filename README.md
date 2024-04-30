@@ -2,7 +2,7 @@
 
 Python utility to append new version to Autodesk  OpenClip files
 
-Suports Image sequences or movie files.
+Suports image sequences and movie files.
 
 
 ## Requirments

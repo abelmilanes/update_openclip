@@ -103,7 +103,7 @@ def update_openclip(
     for version in versions:
         if render_version == version.get('uid'):
             print("|||||||||||||||||||||||||||||||||")
-            print(f"Version {render_version} already in OpenClip")
+            print(f"Version {render_version} already in OpenClip ")
             print("|||||||||||||||||||||||||||||||||")
             return
 

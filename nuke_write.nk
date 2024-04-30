@@ -54,7 +54,7 @@ Root {
 ModifyMetaData {
  inputs 0
  metadata {
-  {set flame/openclip /mnt/RAID/temp/openclip_to_abel/nuke_added_versions_after_v10/sh010/flame/outputclip/sh010.clip}
+  {set flame/openclip /path/to/openclip/sh010.clip}
  }
  name ModifyMetadata
  label "openclip path"
@@ -64,7 +64,7 @@ ModifyMetaData {
 }
 Write {
  channels rgba
- file /mnt/RAID/temp/openclip_to_abel/nuke_added_versions_after_v10/sh010/render/v13/sh010_v13.%04d.exr
+ file /path/to/sh010/render/v01/sh010_v01.%04d.exr
  file_type exr
  compression DWAA
  metadata "all metadata"

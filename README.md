@@ -9,7 +9,7 @@ More information about Autodesk Openclip:
 ## Features
 - Standalone multi-platform
 - Suports image sequences and movie files.
-- YAML based presets for file location and versions entries
+- YAML based presets for metadata and versions entries
 
 
 ## Requirments

@@ -28,11 +28,13 @@ python update_openclip.py -f <openclip file> -i <versioned clip>
 ```
 
 ```
+REQUIRED
   -f FILE,              --file FILE  Openclip file
   
   -i INPUT,             --input INPUT
                         Image sequence or movie clip
-                        
+
+OPTIONAL                        
   -p FEED_PRESET,       --feed_preset FEED_PRESET
                         Openclip feed preset from YAML presets file
                         

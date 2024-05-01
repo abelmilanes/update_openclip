@@ -1,67 +1,16 @@
+set cut_paste_input [stack 0]
 version 15.0 v2
-define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
-<layout version="1.0">
-    <window x="0" y="32" w="1920" h="1131" maximized="1" screen="0">
-        <splitter orientation="1">
-            <split size="40"/>
-            <dock id="" hideTitles="1" activePageId="Toolbar.1">
-                <page id="Toolbar.1"/>
-            </dock>
-            <split size="986" stretch="1"/>
-            <splitter orientation="2">
-                <split size="218"/>
-                <dock id="" activePageId="Viewer.1">
-                    <page id="Viewer.1"/>
-                </dock>
-                <split size="886"/>
-                <dock id="" activePageId="DAG.1" focus="true">
-                    <page id="DAG.1"/>
-                    <page id="Curve Editor.1"/>
-                    <page id="DopeSheet.1"/>
-                </dock>
-            </splitter>
-            <split size="886"/>
-            <dock id="" activePageId="com.adrianpueyo.KnobScripterPane">
-                <page id="Properties.1"/>
-                <page id="uk.co.thefoundry.backgroundrenderview.1"/>
-                <page id="Scenegraph.1"/>
-                <page id="com.adrianpueyo.KnobScripterPane"/>
-            </dock>
-        </splitter>
-    </window>
-</layout>
-}
-Root {
- inputs 0
- name /mnt/config/flame/update_openclip/nuke_write.nk
- project_directory "\[file dirname \[value name]]"
- lock_range true
- format "640 480 0 0 640 480 1 "
- proxy_type scale
- proxy_format "640 480 0 0 640 480 1 "
- colorManagement OCIO
- OCIO_config custom
- defaultViewerLUT "OCIO LUTs"
- workingSpaceLUT scene_linear
- monitorLut "sRGB (ACES)"
- monitorOutLUT "Rec.709 (ACES)"
- int8Lut matte_paint
- int16Lut texture_paint
- logLut compositing_log
- floatLut scene_linear
- views_button false
- free_type_system_fonts false
-}
+push $cut_paste_input
 ModifyMetaData {
- inputs 0
  metadata {
   {set flame/openclip /path/to/openclip/sh010.clip}
  }
  name ModifyMetadata1
  label "openclip path"
  note_font Helvetica
- xpos -231
- ypos -140
+ selected true
+ xpos 305
+ ypos -52
 }
 Write {
  channels rgba
@@ -76,9 +25,9 @@ Write {
  display ACES
  view Rec.709
  afterRender "import nuke\nimport re\nimport subprocess\n\nnode = nuke.thisNode()\n\n# Get the openclip file from the metadata\nopenclip = node.metadata()\['flame/openclip']\n\n# Get the render path from write node and change the frame string to a single frame\nfilename = node\['file'].value()\nframe_pattern = r'(?<=\\.)(\[^.]+)(?=\\.)'\nfilename = re.sub(frame_pattern, str(int(nuke.root()\['first_frame'].value())), filename)\n\n# Path to Python. Need the PyYAML module installed\npython_path = '/mnt/config/python/rnd/openclip/.venv/bin/python'\nupdate_openclip_path = '/mnt/config/python/rnd/openclip/update_openclip.py'\n\n# Process the clip\nprocess = subprocess.Popen(\[python_path, update_openclip_path, '-f', openclip, '-i', filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)\nstdout, stderr = process.communicate()\nif stderr:\n    print(\"Error:\", stderr.decode('utf-8'))"
- name Write
+ name WriteOpenClip
  note_font Helvetica
  selected true
- xpos -231
- ypos -79
+ xpos 305
+ ypos 8
 }

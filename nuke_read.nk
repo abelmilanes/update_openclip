@@ -1,0 +1,20 @@
+set cut_paste_input [stack 0]
+version 15.0 v2
+Read {
+ inputs 0
+ file_type exr
+ origset true
+ auto_alpha true
+ name OpenClipRead
+ knobChanged "import os\nimport re\nimport xml.etree.ElementTree as ET\nimport xml.dom.minidom\nimport datetime\n\nnode = nuke.thisNode()\nknob = nuke.thisKnob()\n\nif knob.name() == \"versions\":\n    sel_ver = knob.value()\n    openclip = node\['openclip'].value()\n    tree = ET.parse(openclip)\n    root = tree.getroot()\n    \n    # Check feeds\n    render_version_dict = \{\}\n    feeds = root.find('.//feeds')\n    for feed in feeds:\n        feed_ver = feed.get('vuid')\n        render_path = feed.find('.//path').text\n        render_version_dict\[feed_ver] = render_path\n        \n    ver_filename = render_version_dict\[sel_ver]\n    \n    read_filename = ver_filename\n    \n    if \".exr\" in ver_filename:\n        img_seq_pattern = r'\\\[(\\d+)-(\\d+)\\]'\n        read_filename = re.sub(img_seq_pattern, '%04d', ver_filename)\n        range_match = r'(\\d+)-(\\d+)'\n        range = re.search(range_match, ver_filename)\n        \n        first_frame = int(range.group(1))\n        last_frame = int(range.group(2))\n        \n        node\['first'].setValue(first_frame)\n        node\['last'].setValue(last_frame)\n    \n    print(read_filename)\n    node\['file'].setValue(read_filename)\n    \n\n    \n    #frames = \[int(f.split('.')\[-2].split('.')\[-1]) for f in files]\n    #extension = \[f.split('.')\[-1] for f in files]\n\n    #start_frame = min(frames)\n    #end_frame = max(frames)\n    \n    \n    "
+ tile_color 0x989898ff
+ note_font Helvetica
+ selected true
+ xpos 219
+ ypos -129
+ postage_stamp false
+ addUserKnob {20 openclip_tab l Openclip}
+ addUserKnob {2 openclip l OpenClip}
+ addUserKnob {4 versions l Versions M {v00}}
+ addUserKnob {22 scan l Scan -STARTLINE T "import os\nimport re\nimport xml.etree.ElementTree as ET\nimport xml.dom.minidom\nimport datetime\n\nnode = nuke.thisNode()\nopenclip = node\['openclip'].value()\n\ntree = ET.parse(openclip)\nroot = tree.getroot()\n\nversions = root.find('.//versions')\n\n# Checks versions\noclip_versions = \[]\nfor version in versions:\n    ver = version.get('uid')\n    oclip_versions.append(ver)\n\nnode\['versions'].setValues(sorted(oclip_versions))\n\n# Check feeds\nrender_version_dict = \{\}\nfeeds = root.find('.//feeds')\nfor feed in feeds:\n    feed_ver = feed.get('vuid')\n    render_path = feed.find('.//path').text\n    render_version_dict\[feed_ver] = render_path\n\nprint(render_version_dict)"}
+}

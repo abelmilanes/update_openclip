@@ -51,6 +51,18 @@ python update_openclip.py -f shot_0010.clip -i shot_0010_comp_v01.1001.exr
 python update_openclip.py -f shot_0010.clip -i shot_0010_comp_v01.mov
 ```
 
+## Nuke Utils
+### nuke_read.nk
+Nuke Read node with extra functionality to read versions from Openclips feeds.
+
+Currently only EXR sequences are suported
+
+### nuke_write.nk
+Nuke Write node with extra functionality to append versions to Openclips feeds.
+
+Openclip file path should be stored in the stream as a ```nuke/flame/openclip``` metadata key.
+
+
 
 
 

@@ -45,25 +45,26 @@ def create_nested_elements(children_info, parent_element):
 
 
 # Builds image sequence string from path to image
-def find_file_sequence(directory):
+def find_file_sequence(render_path):
     # Get list of files in the directory
-    files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+    render_dir = os.path.dirname(render_path)
+    render_basename = os.path.basename(render_path)
+
+    files = [f for f in os.listdir(render_dir) if os.path.isfile(os.path.join(render_dir, f))]
+    img_name_version_patern = r'(\w+).(v\d+)'
     img_seq_pattern = r'(\w+.v\d+.\d+.\w+)'
     files = [filename for filename in files if re.match(img_seq_pattern, filename)]
     # Find the range of numbers
-    image_name = [f.split('.')[-3] for f in files]
-    frames = [int(f.split('.')[-2].split('.')[-1]) for f in files]
-    extension = [f.split('.')[-1] for f in files]
+    frame_pattern = r"(?<=\.)\d+(?=\.)"
+    frames = [re.findall(frame_pattern, f)[0] for f in files]
 
     start_frame = min(frames)
     end_frame = max(frames)
+    frame_range = f"[{start_frame}-{end_frame}]"
 
-    # Construct the output string
-    prefix = os.path.commonprefix(image_name)
-    suffix = os.path.commonprefix([s[::-1] for s in extension])[::-1]
-
-    sequence = f"{prefix}.[{start_frame}-{end_frame}].{suffix}"
-    sequence_string = os.path.join(directory, sequence)
+    # # Construct the output string
+    sequence = re.sub(frame_pattern, frame_range, render_basename)
+    sequence_string = os.path.join(render_dir, sequence)
 
     return sequence_string
 
@@ -78,16 +79,17 @@ def update_openclip(
         ):
 
     render_date = get_creation_date(render_path)
+    print(render_path, render_date)
     # Get Version from image filename
     types_seq = ['EXR', 'exr', 'JPG', 'jpg', 'JPEG', 'jpeg', 'PNG', 'png']
     # types_movies = ['MOV', 'mov', 'MP4', 'mp4']
-    version_pattern = r'(\w+.(v\d+))'
+    version_pattern = r'(\w+).(v\d+)'
+    name_version_match = re.search(version_pattern, os.path.basename(render_path))
     filename, extension = os.path.splitext(os.path.basename(render_path))
     input_extension = extension[1:]
     if input_extension in types_seq:
-        render_dir = os.path.dirname(render_path)
-        render_path = find_file_sequence(render_dir)
-    name_version_match = re.search(version_pattern, os.path.basename(render_path))
+        render_path = find_file_sequence(render_path)
+
     render_name = name_version_match.group(1)
     render_version = name_version_match.group(2)
     render_version_int = str(int(re.sub("v", "", render_version)))

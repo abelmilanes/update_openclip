@@ -1,0 +1,187 @@
+
+-- ============================================================================
+-- modules
+-- ============================================================================
+local xmlutils = self and require("xml2lua") or nil
+local xmlhandler = self and require("xmlhandler/tree") or nil
+
+-- ============================================================================
+-- constants
+-- ============================================================================
+FUSE_NAME = "OpenClipLoader"
+DATATYPE = "Text"
+
+-- ============================================================================
+-- fuse
+-- ============================================================================
+FuRegisterClass(FUSE_NAME, CT_Tool, {
+    REGID_DataType = DATATYPE,
+    REGID_InputDataType = DATATYPE,
+    REG_NoCommonCtrls = true,
+    REGS_Category = "Fuses\\torax",
+    REGS_Name = FUSE_NAME,
+    REGS_OpDescription = "Reads a Text string from a file.",
+    REGS_OpIconString = FUSE_NAME,
+    REGS_IconID = "Icons.Tools.Icons.TextPlus",
+})
+
+function Create()
+    -- [[ Creates the user interface. ]]
+    InOpenClip = self:AddInput("Openclip" , "Openclip" , {
+        LINKID_DataType = "Text",
+        INPID_InputControl = "FileControl",
+        FC_IsSaver = false,
+        FC_ClipBrowse = false,
+        FCS_FilterString =  "TXT (*.txt)|*.txt|SRT (*.srt)|*.srt|CSV Files (*.csv)|*.csv|JSON Files (*.json)|*.json|YAML Files (*.yml)|*.yml|XML Files (*.xml)|*.xml",
+        LINK_Main = 1
+    })
+
+    InScan = self:AddInput("Scan", "Scan", {
+        LINKID_DataType = "Number",
+        INPID_InputControl = "ButtonControl",
+        INP_Default = 0,
+        INP_DoNotifyChanged = true,
+        INP_External = false,
+    })
+
+    -- InVersions = self:AddInput("Versions", "Versions", {
+    --     LINKID_DataType = "Number",
+    --     INPID_InputControl = "ComboControl",
+    --     INP_Default = 0.0,
+    --     INP_Integer = true,
+    --     ICD_Width = 0.5,
+    --     { CCS_AddString = "v00", },
+    --     { CCS_AddString = "v01", },
+    --     CC_LabelPosition = "Vertical",
+    -- })
+
+    InShowInput = self:AddInput("Show Input", "ShowInput", {
+        LINKID_DataType = "Number",
+        INPID_InputControl = "CheckboxControl",
+        INP_Integer = true,
+        INP_Default = 0.0,
+        INP_External = false,
+        INP_DoNotifyChanged = true
+    })
+
+    OutText = self:AddOutput("Output" , "Output" , {
+        LINKID_DataType = "Text",
+        LINK_Main = 1
+    })
+end
+
+function read_file( filename )
+    local f = assert( io.open( filename , "rb" ) )
+    local content = f:read( "*all" )
+
+    f:close()
+
+    return content
+end
+
+
+function NotifyChanged(inp, param, time)
+    --[[
+        Handles all input control events.
+
+        :param inp: Input that triggered a signal.
+        :type inp: Input
+
+        :param param: Parameter object holding the (new) value.
+        :type param: Parameter
+
+        :param time: Current frame number.
+        :type time: float
+    ]]
+
+    if inp == InShowInput then
+        local visible
+        if param.Value == 1.0 then visible = true else visible = false end
+
+        InOpenClip:SetAttrs({LINK_Visible = visible})
+    end
+end
+
+function ParseOpenClip(openclip)
+	-- print (openclip)
+
+    local tree = xmlhandler:new()
+    local xmlparser = xmlutils.parser(tree)
+    xmlparser:parse(openclip)
+    local versions = tree.root.clip.versions or {}
+    local current_version = versions._attr.currentVersion
+    local all_versions = {}
+    -- print (versions.version._attr.uid)
+    -- print (pairs(versions))
+    -- for index, value in pairs(versions.version) do
+    --     print(index, value) -- Print the index
+    -- end
+
+    for index, value in pairs(versions.version) do
+        -- print(index, value._attr.uid) -- Print the index
+        table.insert(all_versions, value._attr.uid)
+    end
+
+    print (current_version)
+    -- print(table.concat(all_versions, ","))
+
+    local feeds = tree.root.clip.tracks.track.feeds
+    local feeds_current_version = feeds._attr.currentVersion
+
+    local feeds_versions = {}
+    print (feeds)
+    for index, value in pairs(feeds.feed) do
+        -- print(index, value._attr.vuid) -- Print the index
+        for i, path in  pairs(value.spans.span.path) do
+            -- print (i, path)
+            feeds_versions [value._attr.vuid] = path
+        end
+    end
+
+    for key, value in pairs(feeds_versions) do
+        print(key .. ": " .. tostring(value))
+    end
+
+    local latest_version = feeds_versions[tostring(current_version)]
+
+    local img_seq = {"exr", "EXR", "jpg", "JPG"}
+    local img_mov = {"mov", "MOV", "mp4", "MP4"}
+    
+    print (latest_version)
+    print (Text(latest_version))
+
+    local range_string_match = "%[%d+-%d+%]"
+
+    if latest_version:match(range_string_match) then
+        print(latest_version)
+        local first_frame, last_frame = latest_version:match("%[(%d+)%-(%d+)%]")
+        latest_version = string.gsub(latest_version, range_string_match, first_frame)
+    end
+
+    print (latest_version)
+
+    return latest_version
+
+end
+
+
+function Process(req)
+    -- [[ Creates the output. ]]
+    local rel_path = InOpenClip:GetValue(req).Value
+
+    local abs_path = self.Comp:MapPath(rel_path)
+
+    local openclip_xml = read_file(abs_path)
+
+    -- print (openclip_xml)
+    local scan_button = InScan:GetValue(req).Value
+    if scan_button == 0 then
+		local output = ParseOpenClip(openclip_xml)
+        local out = Text(output)
+        OutText:Set(req, out)
+    else
+        local output = "NO_IMAGE"
+        local out = Text(output)
+        OutText:Set(req, out)
+    end
+end

@@ -1,0 +1,224 @@
+{
+	Tools = ordered() {
+		OpenClip_Loader = MacroOperator {
+			Inputs = ordered() {
+				MainInput1 = InstanceInput {
+					SourceOp = "OpenClipLoader",
+					Source = "Openclip",
+				},
+				Input1 = InstanceInput {
+					SourceOp = "OpenClipLoader",
+					Source = "Scan",
+					Default = 0,
+				}
+			},
+			Outputs = {
+				MainOutput1 = InstanceOutput {
+					SourceOp = "Version_Name",
+					Source = "Output",
+				},
+				MainOutput2 = InstanceOutput {
+					SourceOp = "MediaOut1_1",
+					Source = "Output",
+				}
+			},
+			ViewInfo = GroupInfo { Pos = { 0, 0 } },
+			Tools = ordered() {
+				vTextSubSplit1_1 = Fuse.vTextSubSplit {
+					Inputs = {
+						Text = Input {
+							SourceOp = "OpenClipLoader",
+							Source = "Output",
+						},
+						Pattern = Input { Value = "[^/]+", }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1895.55, 275.887 } },
+				},
+				vArraySlice1_1 = Fuse.vArraySlice {
+					Inputs = {
+						Input = Input {
+							SourceOp = "vTextSubSplit1_1",
+							Source = "Output",
+						},
+						Start = Input { Value = 8, },
+						Stop = Input { Value = 9, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1895.31, 298.804 } },
+				},
+				vFileSystemFileExists1_1_1 = Fuse.vFileSystemFileExists {
+					Inputs = {
+						Text = Input {
+							SourceOp = "OpenClipLoader",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { 1782.81, 306.239 } },
+				},
+				Version_Name = Fuse.vArrayJoin {
+					NameSet = true,
+					Inputs = {
+						Input = Input {
+							SourceOp = "vArraySlice1_1",
+							Source = "Array",
+						},
+						Separator = Input { Value = "_", },
+						ShowInput = Input { Value = 1, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1983.67, 321.479 } },
+				},
+				vNumberAdd1_2_1_1 = Fuse.vNumberAdd {
+					Inputs = {
+						Term1 = Input {
+							SourceOp = "vNumberCompReqTime1_1_1",
+							Source = "Output",
+						},
+						Term2 = Input {
+							SourceOp = "vNumberCreate1_1_1_1",
+							Source = "Output",
+						},
+						ShowInput = Input { Value = 1, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1674.83, 248.041 } },
+				},
+				vNumberCompReqTime1_1_1 = Fuse.vNumberCompReqTime {
+					ViewInfo = OperatorInfo { Pos = { 1674.37, 221.79 } },
+				},
+				vNumberAdd1_3_1 = Fuse.vNumberAdd {
+					Inputs = {
+						Term1 = Input {
+							SourceOp = "vFileSystemFileExists1_1_1",
+							Source = "Output",
+						},
+						Term2 = Input { Value = 1, },
+						ShowInput = Input { Value = 1, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1783.23, 342.215 } },
+				},
+				Text1 = TextPlus {
+					Inputs = {
+						Width = Input { Value = 1920, },
+						Height = Input { Value = 1080, },
+						UseFrameFormatSettings = Input { Value = 1, },
+						["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+						Center = Input { Value = { 0.138096045996513, 0.102950133976335 }, },
+						LayoutRotation = Input { Value = 1, },
+						TransformRotation = Input { Value = 1, },
+						Softness1 = Input { Value = 1, },
+						StyledText = Input { Expression = "Version_Name.Output", },
+						Font = Input { Value = "Open Sans", },
+						Style = Input { Value = "Bold", },
+						Size = Input { Value = 0.0401, },
+						VerticalJustificationNew = Input { Value = 3, },
+						HorizontalJustificationNew = Input { Value = 3, },
+						AdvancedFontControls = Input { Value = 1, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1913.05, 350.954 } },
+				},
+				vImageFromFile1_1_1 = Fuse.vImageFromFile {
+					Inputs = {
+						Input = Input {
+							SourceOp = "OpenClipLoader",
+							Source = "Output",
+						},
+						TimeMode = Input { Value = 3, },
+						Time = Input {
+							SourceOp = "vNumberAdd1_2_1_1",
+							Source = "Output",
+						},
+						ShowInput = Input { Value = 1, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1672.55, 350.555 } },
+				},
+				vNumberCreate1_1_1_1 = Fuse.vNumberCreate {
+					CtrlWZoom = false,
+					Inputs = {
+						Number = Input {
+							Value = -46,
+							Expression = "comp.RenderStart*-1",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { 1582.34, 248.28 } },
+				},
+				OpenClipLoader = Fuse.OpenClipLoader {
+					CtrlWZoom = false,
+					NameSet = true,
+					Inputs = {
+						Openclip = Input { Value = "", },
+						ShowInput = Input { Value = 1, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1558.6, 300.821 } },
+				},
+				MediaIn1_1 = MediaIn {
+					ExtentSet = true,
+					CustomData = { MediaProps = { FUSION_MARKERS_INFO_LIST = { { FUSION_MARKER_NOTE = "VFX Shot", FUSION_MARKER_COLOR = "ResolveColorBlue", FUSION_MARKER_COLOR_VALUE = 671121379, FUSION_MARKER_POSITION = 49, FUSION_MARKER_NAME = "gen_0030", FUSION_MARKER_PIXMAP_NAME = ":/Common/FlagsAndMarkers/MarkerBlue", FUSION_MARKER_ID = 49, FUSION_MARKER_DURATION = 160, FUSION_MARKER_TYPE = "FUSION_MARKER_TYPE_CLIP" } }, MEDIA_AUDIO_TRACKS_NUM = 1, MEDIA_MARK_OUT = 206, MEDIA_AUDIO_TRACKS_DESC = { { MEDIA_AUDIO_BIT_DEPTH = 32, MEDIA_AUDIO_TRACK_ID = "Timeline Audio", MEDIA_AUDIO_TRACK_NAME = "Timeline Audio [pipe_test]", MEDIA_AUDIO_NUM_CHANNELS = 2, MEDIA_AUDIO_START_TIME = 46, MEDIA_AUDIO_SAMPLE_RATE = 48000, MEDIA_AUDIO_FRAME_RATE = 23.976023976024 } }, MEDIA_MARK_IN = 46, MEDIA_NUM_LAYERS = 1, MEDIA_FORMAT_TYPE = "QuickTime", MEDIA_NAME = "gen_0030", MEDIA_HEIGHT = 1080, MEDIA_IS_SOURCE_RES = true, MEDIA_PAR = 1, MEDIA_SRC_FRAME_RATE = 23.976023976024, MEDIA_PATH = "/mnt/projects/elements/action_vfx/practice_footage/PF0010-01_Clip-1_REC709_HD.mov", MEDIA_HAS_AUDIO = true, MEDIA_NUM_FRAMES = 239, MEDIA_START_FRAME = 0, MEDIA_WIDTH = 1920 }, },
+					Inputs = {
+						GlobalOut = Input { Value = 238, },
+						AudioTrack = Input { Value = FuID { "Timeline Audio" }, },
+						Layer = Input { Value = "0", },
+						ClipTimeEnd = Input { Value = 238, },
+						["Gamut.ColorSpaceNest"] = Input { Value = 1, },
+						["Gamut.GammaSpaceNest"] = Input { Value = 1, },
+						["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+						LeftAudio = Input {
+							SourceOp = "Left",
+							Source = "Data",
+						},
+						RightAudio = Input {
+							SourceOp = "Right",
+							Source = "Data",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { 1485.12, 428.369 } },
+				},
+				Left = AudioDisplay {
+					CtrlWZoom = false,
+				},
+				Right = AudioDisplay {
+					CtrlWZoom = false,
+				},
+				Merge1 = Merge {
+					Inputs = {
+						Background = Input {
+							SourceOp = "vImageSwitch1_1_1",
+							Source = "Output",
+						},
+						Foreground = Input {
+							SourceOp = "Text1",
+							Source = "Output",
+						},
+						PerformDepthMerge = Input { Value = 0, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 1912.63, 429.773 } },
+				},
+				MediaOut1_1 = MediaOut {
+					Inputs = {
+						Index = Input { Value = "0", },
+						Input = Input {
+							SourceOp = "Merge1",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { 2031.39, 428.763 } },
+				},
+				vImageSwitch1_1_1 = Fuse.vImageSwitch {
+					Inputs = {
+						Which = Input {
+							SourceOp = "vNumberAdd1_3_1",
+							Source = "Output",
+						},
+						Input1 = Input {
+							SourceOp = "MediaIn1_1",
+							Source = "Output",
+						},
+						Input2 = Input {
+							SourceOp = "vImageFromFile1_1_1",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { 1726.09, 429.773 } },
+				}
+			},
+		}
+	},
+	ActiveTool = "OpenClip_Loader"
+}

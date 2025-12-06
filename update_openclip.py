@@ -1,5 +1,6 @@
 #!.venv/bin/python
 
+import json
 import os
 import re
 import yaml
@@ -51,23 +52,25 @@ def find_file_sequence(render_path):
     render_dir = os.path.dirname(render_path)
     render_basename = os.path.basename(render_path)
 
-    files = [f for f in os.listdir(render_dir) if os.path.isfile(os.path.join(render_dir, f))]
+    files = [
+        f for f in os.listdir(render_dir) if os.path.isfile(os.path.join(render_dir, f))
+    ]
     # img_name_version_patern = r'(\w+).(v\d+)'
     img_seq_pattern = r'(\w+.v\d+.\d+.\w+)'
     files = [filename for filename in files if re.match(img_seq_pattern, filename)]
     # Find the range of numbers
-    frame_pattern = r"(?<=\.)\d+(?=\.)"
+    frame_pattern = r'(?<=\.)\d+(?=\.)'
     frames = []
     for f in files:
         match = re.findall(frame_pattern, f)
         if match:
             frames.append(match[0])  # Only add if there is a match
         else:
-            print(f"No match found in: {f}")
+            print(f'No match found in: {f}')
 
     start_frame = min(frames)
     end_frame = max(frames)
-    frame_range = f"[{start_frame}-{end_frame}]"
+    frame_range = f'[{start_frame}-{end_frame}]'
 
     # # Construct the output string
     sequence = re.sub(frame_pattern, frame_range, render_basename)
@@ -87,13 +90,12 @@ def get_metadata(file, metadata_key):
 
 # Loads Openclip and appends relevant elements
 def update_openclip(
-        openclip,
-        render_path,
-        feed_preset="default",
-        version_preset="nuke_version",
-        dryrun=False
-        ):
-
+    openclip,
+    render_path,
+    feed_preset='default',
+    version_preset='nuke_version',
+    dryrun=False,
+):
     render_date = get_creation_date(render_path)
     print(render_path, render_date)
     # Get Version from image filename
@@ -111,7 +113,7 @@ def update_openclip(
 
     render_name = name_version_match.group(1)
     render_version = name_version_match.group(2)
-    render_version_int = str(int(re.sub("v", "", render_version)))
+    render_version_int = str(int(re.sub('v', '', render_version)))
 
     ########################################
     # Starts openclip work
@@ -123,15 +125,17 @@ def update_openclip(
     # Checks if version is already in openclip and exists if is true
     for version in versions:
         if render_version == version.get('uid'):
-            print("|||||||||||||||||||||||||||||||||")
-            print(f"Version {render_version} already in OpenClip ")
-            print("|||||||||||||||||||||||||||||||||")
+            print('|||||||||||||||||||||||||||||||||')
+            print(f'Version {render_version} already in OpenClip ')
+            print('|||||||||||||||||||||||||||||||||')
             return
 
     # Continue if version is new
-    openclip_presets_file = os.path.join(os.path.dirname(__file__), 'openclip_templates.yaml')
+    openclip_presets_file = os.path.join(
+        os.path.dirname(__file__), 'openclip_templates.json'
+    )
     with open(openclip_presets_file, 'r') as file:
-        op_template = yaml.safe_load(file)
+        op_template = json.load(file)
 
     # Creates a new feed entry with structure from template file
     new_render_element = element_from_template(op_template[feed_preset])
@@ -161,7 +165,7 @@ def update_openclip(
 
     # Get metadat from EXR
     # Nuke Version Preset
-    if version_preset == "nuke_version":
+    if version_preset == 'nuke_version':
         # query_metadata = [
         #     "nuke/flame/openclip",
         #     "nuke/nuke_script"
@@ -171,11 +175,15 @@ def update_openclip(
         #     key_value = get_metadata(render_path, key)
         #     print(f"{key}: {key_value}")
         try:
-            new_version_element.find('.//appVersion').text = get_metadata(render_path, 'nuke/nuke_version')
+            new_version_element.find('.//appVersion').text = get_metadata(
+                render_path, 'nuke/nuke_version'
+            )
         except Exception as E:
             print(E)
         try:
-            new_version_element.find('.//batchSetup').text = get_metadata(render_path, 'nuke/nuke_script')
+            new_version_element.find('.//batchSetup').text = get_metadata(
+                render_path, 'nuke/nuke_script'
+            )
         except Exception as E:
             print(E)
 
@@ -191,50 +199,62 @@ def update_openclip(
 
     # Write out new openclip
     xml_string = ET.tostring(root, encoding='utf-8').decode()
-    xml_string = xml.dom.minidom.parseString(xml_string).toprettyxml(indent="\t")
-    xml_string = '\n'.join(line for line in xml_string .split('\n') if line.strip())
+    xml_string = xml.dom.minidom.parseString(xml_string).toprettyxml(indent='\t')
+    xml_string = '\n'.join(line for line in xml_string.split('\n') if line.strip())
 
     if not dryrun:
         with open(openclip, 'w') as file:
             file.write(xml_string)
 
-    print("|||||||||||||||||||||||||||||||||")
-    print(f"Updated openclip file: {openclip}")
-    print(f"Appended version: {render_version}")
-    print(f"Image sequence: {render_path}")
-    print("|||||||||||||||||||||||||||||||||")
+    print('|||||||||||||||||||||||||||||||||')
+    print(f'Updated openclip file: {openclip}')
+    print(f'Appended version: {render_version}')
+    print(f'Image sequence: {render_path}')
+    print('|||||||||||||||||||||||||||||||||')
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Utility to update version on a Openclip file')
-    parser.add_argument('-f', '--file',
-                        action="store",
-                        dest="file",
-                        default='',
-                        help='Openclip file')
+    parser = argparse.ArgumentParser(
+        description='Utility to update version on a Openclip file'
+    )
+    parser.add_argument(
+        '-f', '--file', action='store', dest='file', default='', help='Openclip file'
+    )
 
-    parser.add_argument('-i', '--input',
-                        action="store",
-                        dest="input",
-                        default='',
-                        help='Image sequence or movie clip')
+    parser.add_argument(
+        '-i',
+        '--input',
+        action='store',
+        dest='input',
+        default='',
+        help='Image sequence or movie clip',
+    )
 
-    parser.add_argument('-p', '--feed_preset',
-                        action="store",
-                        dest="feed_preset",
-                        default='default',
-                        help='Openclip feed preset from YAML presets file')
+    parser.add_argument(
+        '-p',
+        '--feed_preset',
+        action='store',
+        dest='feed_preset',
+        default='default',
+        help='Openclip feed preset from YAML presets file',
+    )
 
-    parser.add_argument('-m', '--version_preset',
-                        action="store",
-                        dest="version_preset",
-                        default='nuke_version',
-                        help='Openclip version preset from YAML presets file')
+    parser.add_argument(
+        '-m',
+        '--version_preset',
+        action='store',
+        dest='version_preset',
+        default='nuke_version',
+        help='Openclip version preset from YAML presets file',
+    )
 
-    parser.add_argument('-n', '--dry_run',
-                        action="store_true",
-                        dest="dry_run",
-                        help='Print results but dont do anything')
+    parser.add_argument(
+        '-n',
+        '--dry_run',
+        action='store_true',
+        dest='dry_run',
+        help='Print results but dont do anything',
+    )
 
     # Currently the appender version is forsed as the CURRENT for the opnclip
     # Wondering if I should add a flag do this as an option
@@ -250,8 +270,8 @@ def main():
 
         update_openclip(openclip_file, render_path, feed_preset, version_preset, dryrun)
     else:
-        print("Please provide -f and -c arguments")
+        print('Please provide -f and -c arguments')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

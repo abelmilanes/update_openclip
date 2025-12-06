@@ -1,163 +1,107 @@
 {
-  "feed_presets": {
-    "default": {
-      "tag": "feed",
-      "attributes": {
-        "vuid": "v00",
-        "uid": "render_name"
-      },
-      "children": [
-        {
-          "tag": "startTimecode",
-          "attributes": {
-            "type": "time"
-          },
-          "children": [
-            {
-              "tag": "rate",
-              "text": "25" # modify
-            },
-            {
-              "tag": "nbTicks",
-              "text": "100"
-            },
-            {
-              "tag": "dropMode",
-              "text": "NDF"
-            }
-          ]
-        },
-        {
-          "tag": "spans",
-          "children": [
-            {
-              "tag": "span",
-              "children": [
-                {
-                  "tag": "path",
-                  "text": "image_sequence",
-                  "attributes": {
-                    "encoding": "pattern"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  },
-  "version_presets": {
-    "nuke_version": {
-      "tag": "version",
-      "attributes": {
-        "uid": "v00"
-      },
-      "children": [
-        {
-          "tag": "name",
-          "text": "v00"
-        },
-        {
-          "tag": "creationDate",
-          "text": "yyyy/mm/dd hh:mm:ss"
-        },
-        {
-          "tag": "userData",
-          "attributes": {
-            "type": "dict"
-          },
-          "children": [
-            {
-              "tag": "appName",
-              "text": "Nuke",
-              "attributes": {
-                "type": "binary"
-              }
-            },
-            {
-              "tag": "appVersion",
-              "text": "exr_metadata nuke/nuke_version",
-              "attributes": {
-                "type": "string"
-              }
-            },
-            {
-              "tag": "batchSetup",
-              "text": "exr_metadata nuke/nuke_script",
-              "attributes": {
-                "type": "ascii"
-              }
-            },
-            {
-              "tag": "module",
-              "text": "Nuke Script",
-              "attributes": {
-                "type": "string"
-              }
-            },
-            {
-              "tag": "versionNumber",
-              "text": "0",
-              "attributes": {
-                "type": "uint64"
-              }
-            }
-          ]
-        }
-      ]
+  "default": {
+    "tag": "feed",
+    "attributes": {
+      "vuid": "v00",
+      "uid": "render_name"
     },
-    "default": {
-      "tag": "version",
-      "attributes": {
-        "uid": "v00"
-      },
-      "children": [
-        {
-          "tag": "name",
-          "text": "v00"
+    "children": [
+      {
+        "tag": "startTimecode",
+        "attributes": {
+          "type": "time"
         },
-        {
-          "tag": "creationDate",
-          "text": "yyyy/mm/dd hh:mm:ss"
-        },
-        {
-          "tag": "userData",
-          "attributes": {
-            "type": "dict"
+        "children": [
+          {
+            "tag": "rate",
+            "text": "25"
           },
-          "children": [
-            {
-              "tag": "appName",
-              "text": "Generic",
-              "attributes": {
-                "type": "binary"
+          {
+            "tag": "nbTicks",
+            "text": "100"
+          },
+          {
+            "tag": "dropMode",
+            "text": "NDF"
+          }
+        ]
+      },
+      {
+        "tag": "spans",
+        "children": [
+          {
+            "tag": "span",
+            "children": [
+              {
+                "tag": "path",
+                "text": "image_sequence",
+                "attributes": {
+                  "encoding": "pattern"
+                }
               }
-            },
-            {
-              "tag": "appVersion",
-              "text": "1.0",
-              "attributes": {
-                "type": "string"
-              }
-            },
-            {
-              "tag": "module",
-              "text": "Export",
-              "attributes": {
-                "type": "string"
-              }
-            },
-            {
-              "tag": "versionNumber",
-              "text": "0",
-              "attributes": {
-                "type": "uint64"
-              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "nuke_version": {
+    "tag": "version",
+    "attributes": {
+      "uid": "v00"
+    },
+    "children": [
+      {
+        "tag": "name",
+        "text": "v00"
+      },
+      {
+        "tag": "creationDate",
+        "text": "yyyy/mm/dd hh:mm:ss"
+      },
+      {
+        "tag": "userData",
+        "attributes": {
+          "type": "dict"
+        },
+        "children": [
+          {
+            "tag": "appName",
+            "text": "Nuke",
+            "attributes": {
+              "type": "binary"
             }
-          ]
-        }
-      ]
-    }
+          },
+          {
+            "tag": "appVersion",
+            "text": "exr_metadata nuke/nuke_version",
+            "attributes": {
+              "type": "string"
+            }
+          },
+          {
+            "tag": "batchSetup",
+            "text": "exr_metadata nuke/nuke_script",
+            "attributes": {
+              "type": "ascii"
+            }
+          },
+          {
+            "tag": "module",
+            "text": "Nuke Script",
+            "attributes": {
+              "type": "string"
+            }
+          },
+          {
+            "tag": "versionNumber",
+            "text": "0",
+            "attributes": {
+              "type": "uint64"
+            }
+          }
+        ]
+      }
+    ]
   }
 }
